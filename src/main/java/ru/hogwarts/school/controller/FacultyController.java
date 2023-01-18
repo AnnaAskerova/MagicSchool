@@ -1,5 +1,6 @@
 package ru.hogwarts.school.controller;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -7,6 +8,7 @@ import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.service.FacultyService;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("faculty")
@@ -28,11 +30,8 @@ public class FacultyController {
 
     @GetMapping("{id}")
     public ResponseEntity<?> readFaculty(@PathVariable long id) {
-        Faculty temp = facultyService.get(id);
-        if (temp == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        return ResponseEntity.ok(temp);
+        Optional<Faculty> temp = facultyService.get(id);
+        return temp.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @PutMapping
@@ -46,14 +45,19 @@ public class FacultyController {
 
     @DeleteMapping("{id}")
     public ResponseEntity<?> deleteFaculty(@PathVariable long id) {
-        Faculty temp = facultyService.delete(id);
-        if (temp == null) {
+        try {
+            facultyService.delete(id);
+        } catch (EmptyResultDataAccessException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        return ResponseEntity.ok(temp);
+        return ResponseEntity.ok().build();
     }
     @GetMapping("/color/{color}")
-    public Collection<Faculty> filterByColor(@PathVariable String color) {
-        return facultyService.filterByColor(color);
+    public ResponseEntity<?> filterByColor(@PathVariable String color) {
+        Collection<Faculty> temp = facultyService.filterByColor(color);
+        if (temp.isEmpty()) {
+            return new ResponseEntity<>("Нет такого цвета", HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(temp);
     }
 }
