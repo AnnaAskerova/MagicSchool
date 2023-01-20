@@ -11,7 +11,7 @@ import java.util.Optional;
 @Service
 public class FacultyService {
 
-private final FacultyRepository facultyRepository;
+    private final FacultyRepository facultyRepository;
 
     public FacultyService(FacultyRepository facultyRepository) {
         this.facultyRepository = facultyRepository;
@@ -41,5 +41,13 @@ private final FacultyRepository facultyRepository;
 
     public Collection<Faculty> filterByColor(String color) {
         return facultyRepository.findAll().stream().filter(s -> s.getColor().equals(color)).toList();
+    }
+
+    public Collection<Faculty> findByNameOrColor(String name, String color) {
+        return facultyRepository.findByNameIgnoreCaseOrColorIgnoreCase(name, color);
+    }
+
+    public Faculty getFacultyByStudentId(long id) {
+        return facultyRepository.findFacultyByStudentsId(id);
     }
 }

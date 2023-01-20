@@ -52,11 +52,30 @@ public class FacultyController {
         }
         return ResponseEntity.ok().build();
     }
+
     @GetMapping("/color/{color}")
     public ResponseEntity<?> filterByColor(@PathVariable String color) {
         Collection<Faculty> temp = facultyService.filterByColor(color);
         if (temp.isEmpty()) {
             return new ResponseEntity<>("Нет такого цвета", HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(temp);
+    }
+
+    @GetMapping
+    public ResponseEntity<?> findByNameOrColor(@RequestParam(required = false) String name, @RequestParam(required = false) String color) {
+        Collection<Faculty> temp = facultyService.findByNameOrColor(name, color);
+        if (temp.isEmpty()) {
+            return new ResponseEntity<>("Нет таких факультетов :(", HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(temp);
+    }
+
+    @GetMapping("/faultyid/{id}")
+    public ResponseEntity<?> getFaculty(@PathVariable long id) {
+        Faculty temp = facultyService.getFacultyByStudentId(id);
+        if (temp == null) {
+            return new ResponseEntity<>("Нет информации :(", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(temp);
     }

@@ -62,4 +62,23 @@ public class StudentController {
         }
         return ResponseEntity.ok(temp);
     }
+
+    @GetMapping()
+    public ResponseEntity<?> findByAgeBetween(@RequestParam int min, @RequestParam int max) {
+        Collection<Student> temp = studentService.findByAgeBetween(min, max);
+        if (temp.isEmpty()) {
+            return new ResponseEntity<>("Нет студентов такого возраста", HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(temp);
+    }
+
+    @GetMapping("/allfromfaculty/{id}")
+    public ResponseEntity<?> getStudentsFromTheFaculty(@PathVariable long id) {
+        Collection<Student> temp = studentService.getStudentsFromTheFaculty(id);
+        if (temp.isEmpty()) {
+            return new ResponseEntity<>("Нет студентов такого факультета", HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(temp);
+    }
+
 }
