@@ -3,6 +3,7 @@ package ru.hogwarts.school.service;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Faculty;
+import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
 
 import java.util.Collection;
@@ -49,5 +50,13 @@ public class FacultyService {
 
     public Faculty getFacultyByStudentId(long id) {
         return facultyRepository.findFacultyByStudentsId(id);
+    }
+
+    public Collection<Student> getAllStudentsFromFaculty(long id) {
+        Optional<Faculty> temp = get(id);
+        if (temp.isEmpty()) {
+            return null;
+        }
+        return temp.get().getStudents();
     }
 }
