@@ -71,14 +71,4 @@ public class StudentController {
         }
         return ResponseEntity.ok(temp);
     }
-
-   /* @GetMapping("/allfromfaculty/{id}")
-    public ResponseEntity<?> getStudentsFromTheFaculty(@PathVariable long id) {
-        Collection<Student> temp = studentService.getStudentsFromTheFaculty(id);
-        if (temp.isEmpty()) {
-            return new ResponseEntity<>("Нет студентов такого факультета", HttpStatus.NOT_FOUND);
-        }
-        return ResponseEntity.ok(temp);
-    }*/
-
 }
