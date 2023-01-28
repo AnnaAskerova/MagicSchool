@@ -4,6 +4,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.record.FacultyRequest;
 import ru.hogwarts.school.repository.FacultyRepository;
 
 import java.util.Collection;
@@ -18,10 +19,14 @@ public class FacultyService {
         this.facultyRepository = facultyRepository;
     }
 
-    public Faculty add(Faculty faculty) {
-        if (facultyRepository.existsById(faculty.getId())) {
+    public Faculty add(FacultyRequest facultyRequest) {
+        if (facultyRepository.existsById(facultyRequest.id())) {
             return null;
         }
+        Faculty faculty = new Faculty();
+        faculty.setId(facultyRequest.id());
+        faculty.setColor(facultyRequest.color());
+        faculty.setName(facultyRequest.name());
         return facultyRepository.save(faculty);
     }
 
@@ -29,8 +34,12 @@ public class FacultyService {
         return facultyRepository.findById(id);
     }
 
-    public Faculty update(Faculty faculty) {
-        if (facultyRepository.existsById(faculty.getId())) {
+    public Faculty update(FacultyRequest facultyRequest) {
+        if (facultyRepository.existsById(facultyRequest.id())) {
+            Faculty faculty = new Faculty();
+            faculty.setId(facultyRequest.id());
+            faculty.setColor(facultyRequest.color());
+            faculty.setName(facultyRequest.name());
             return facultyRepository.save(faculty);
         }
         return null;
@@ -46,10 +55,6 @@ public class FacultyService {
 
     public Collection<Faculty> findByNameOrColor(String name, String color) {
         return facultyRepository.findByNameIgnoreCaseOrColorIgnoreCase(name, color);
-    }
-
-    public Faculty getFacultyByStudentId(long id) {
-        return facultyRepository.findFacultyByStudentsId(id);
     }
 
     public Collection<Student> getAllStudentsFromFaculty(long id) {

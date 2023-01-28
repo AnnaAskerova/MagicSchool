@@ -4,7 +4,9 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.record.StudentRequest;
 import ru.hogwarts.school.service.StudentService;
 
 import java.util.Collection;
@@ -21,8 +23,8 @@ public class StudentController {
 
 
     @PostMapping
-    public ResponseEntity<?> createStudent(@RequestBody Student student) {
-        Student temp = studentService.add(student);
+    public ResponseEntity<?> createStudent(@RequestBody StudentRequest studentRequest) {
+        Student temp = studentService.add(studentRequest);
         if (temp == null) {
             return new ResponseEntity<>("Уже существует", HttpStatus.BAD_REQUEST);
         }
@@ -36,8 +38,8 @@ public class StudentController {
     }
 
     @PutMapping
-    public ResponseEntity<?> updateStudent(@RequestBody Student student) {
-        Student temp = studentService.update(student);
+    public ResponseEntity<?> updateStudent(@RequestBody StudentRequest studentRequest) {
+        Student temp = studentService.update(studentRequest);
         if (temp == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
@@ -68,6 +70,15 @@ public class StudentController {
         Collection<Student> temp = studentService.findByAgeBetween(min, max);
         if (temp.isEmpty()) {
             return new ResponseEntity<>("Нет студентов такого возраста", HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(temp);
+    }
+
+    @GetMapping("/faculty/{id}")
+    public ResponseEntity<?> getFaculty(@PathVariable long id) {
+        Faculty temp = studentService.getFacultyByStudentId(id);
+        if (temp == null) {
+            return new ResponseEntity<>("Нет информации :(", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(temp);
     }

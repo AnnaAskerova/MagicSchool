@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Objects;
 
 @Entity
@@ -44,8 +45,13 @@ public class Faculty {
         this.color = color;
     }
 
+
     public Collection<Student> getStudents() {
-        return students;
+        return Objects.requireNonNullElse(students, Collections.emptyList());
+    }
+
+    public void setStudents(Collection<Student> students) {
+        this.students = students;
     }
 
     @Override
@@ -65,10 +71,10 @@ public class Faculty {
     @Override
     public String toString() {
         return "Faculty{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", color='" + color + '\'' +
-                ", students=" + students +
+                "id=" + Objects.requireNonNull(id, "") +
+                ", name='" + Objects.requireNonNull(name, "") + '\'' +
+                ", color='" + Objects.requireNonNull(color, "") + '\'' +
+                ", students=" + Objects.requireNonNull(this.getStudents(), "") +
                 '}';
     }
 }

@@ -26,13 +26,13 @@ public class AvatarController {
         this.avatarService = avatarService;
     }
 
-    @PostMapping(value = "/{studentId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> uploadAvatar(@PathVariable Long studentId, @RequestParam MultipartFile avatar) {
+    @PostMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> uploadAvatar(@RequestParam MultipartFile avatar, @PathVariable Long id) {
         if (avatar.getSize() > 1024 * 300) {
             return ResponseEntity.badRequest().body("Слишком большой!");
         }
         try {
-            avatarService.uploadAvatar(studentId, avatar);
+            avatarService.uploadAvatar(id, avatar);
             return ResponseEntity.ok().build();
         } catch (IOException e) {
             e.printStackTrace();
@@ -40,11 +40,11 @@ public class AvatarController {
         }
     }
 
-    @GetMapping(value = "/{studentId}/preview")
-    public ResponseEntity<?> downloadAvatar(@PathVariable Long studentId) {
+    @GetMapping(value = "/{id}/preview")
+    public ResponseEntity<?> downloadAvatar(@PathVariable Long id) {
         Avatar avatar;
         try {
-            avatar = avatarService.findAvatar(studentId);
+            avatar = avatarService.findAvatar(id);
         } catch (StudentNotExistException e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -56,19 +56,19 @@ public class AvatarController {
         return ResponseEntity.status(HttpStatus.OK).headers(headers).body(data);
     }
 
-    @GetMapping(value = "/{studentId}/from-file")
-    public void downloadAvatar(@PathVariable Long studentId, HttpServletResponse response) throws IOException {
+    @GetMapping(value = "/{id}/from-file")
+    public void downloadAvatar(@PathVariable Long id, HttpServletResponse response) throws IOException {
         Avatar avatar;
         try {
-            avatar = avatarService.findAvatar(studentId);
+            avatar = avatarService.findAvatar(id);
         } catch (StudentNotExistException e) {
             e.printStackTrace();
             response.setStatus(404);
             return;
         }
         Path path = Path.of(avatar.getFilePath());
-        try(InputStream is = Files.newInputStream(path);
-            OutputStream os = response.getOutputStream()) {
+        try (InputStream is = Files.newInputStream(path);
+             OutputStream os = response.getOutputStream()) {
             response.setStatus(200);
             response.setContentType(avatar.getMediaType());
             response.setContentLength((int) avatar.getFileSize());
