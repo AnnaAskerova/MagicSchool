@@ -22,7 +22,7 @@ public class StudentService {
     }
 
     public Student add(StudentRequest studentRequest) {
-        if (studentRepository.existsById(studentRequest.id())) {
+        if (studentRepository.existsById(studentRequest.getId())) {
             return null;
         }
         return saveRecordAsStudent(studentRequest);
@@ -33,7 +33,7 @@ public class StudentService {
     }
 
     public Student update(StudentRequest studentRequest) {
-        if (studentRepository.existsById(studentRequest.id())) {
+        if (studentRepository.existsById(studentRequest.getId())) {
             return saveRecordAsStudent(studentRequest);
         }
         return null;
@@ -41,10 +41,10 @@ public class StudentService {
 
     private Student saveRecordAsStudent(StudentRequest studentRequest) {
         Student student = new Student();
-        student.setId(studentRequest.id());
-        student.setAge(studentRequest.age());
-        student.setName(studentRequest.name());
-        long facultyId = studentRequest.facultyId();
+        student.setId(studentRequest.getId());
+        student.setAge(studentRequest.getAge());
+        student.setName(studentRequest.getName());
+        long facultyId = studentRequest.getFacultyId();
         if (facultyId != 0) {
             student.setFaculty(facultyService.get(facultyId).orElse(null));
         }

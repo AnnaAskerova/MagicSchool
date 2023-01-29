@@ -20,14 +20,10 @@ public class FacultyService {
     }
 
     public Faculty add(FacultyRequest facultyRequest) {
-        if (facultyRepository.existsById(facultyRequest.id())) {
+        if (facultyRepository.existsById(facultyRequest.getId())) {
             return null;
         }
-        Faculty faculty = new Faculty();
-        faculty.setId(facultyRequest.id());
-        faculty.setColor(facultyRequest.color());
-        faculty.setName(facultyRequest.name());
-        return facultyRepository.save(faculty);
+        return facultyRepository.save(saveRecordAsFaculty(facultyRequest));
     }
 
     public Optional<Faculty> get(long id) {
@@ -35,14 +31,18 @@ public class FacultyService {
     }
 
     public Faculty update(FacultyRequest facultyRequest) {
-        if (facultyRepository.existsById(facultyRequest.id())) {
-            Faculty faculty = new Faculty();
-            faculty.setId(facultyRequest.id());
-            faculty.setColor(facultyRequest.color());
-            faculty.setName(facultyRequest.name());
-            return facultyRepository.save(faculty);
+        if (facultyRepository.existsById(facultyRequest.getId())) {
+            return facultyRepository.save(saveRecordAsFaculty(facultyRequest));
         }
         return null;
+    }
+
+    private Faculty saveRecordAsFaculty(FacultyRequest facultyRequest) {
+        Faculty faculty = new Faculty();
+        faculty.setId(facultyRequest.getId());
+        faculty.setColor(facultyRequest.getColor());
+        faculty.setName(facultyRequest.getName());
+        return faculty;
     }
 
     public void delete(long id) throws EmptyResultDataAccessException {
