@@ -166,14 +166,14 @@ class FacultyControllerTest {
                 .andExpect(content().json(mapper.writeValueAsString(list)));
 
     }
-  /*  @Test
+
+    @Test
     void getAllStudentsFromFaculty() throws Exception {
         when(facultyRepository.findById(id)).thenReturn(Optional.of(faculty));
-       // doReturn(Collections.emptyList()).when(facultyService).getAllStudentsFromFaculty(id);
         mockMvc.perform(MockMvcRequestBuilders.get("/from-faculty/{id}", id)
                         .content(id.toString())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-    }*/
+    }
 }

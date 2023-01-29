@@ -61,7 +61,7 @@ class StudentControllerTest {
     @Test
     void filterByAge() throws Exception {
         studentController.createStudent(STUDENT);
-        assertThat(restTemplate.getForObject("http://localhost:" + port + "/student/age/{age}", String.class, STUDENT.age()))
+        assertThat(restTemplate.getForObject("http://localhost:" + port + "/student/age/{age}", String.class, STUDENT.getAge()))
                 .isNotNull();
     }
 
