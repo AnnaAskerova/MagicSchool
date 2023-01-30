@@ -1,6 +1,5 @@
 package ru.hogwarts.school.controller;
 
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +9,6 @@ import ru.hogwarts.school.record.StudentRequest;
 import ru.hogwarts.school.service.StudentService;
 
 import java.util.Collection;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("student")
@@ -24,35 +22,22 @@ public class StudentController {
 
     @PostMapping
     public ResponseEntity<?> createStudent(@RequestBody StudentRequest studentRequest) {
-        Student temp = studentService.add(studentRequest);
-        if (temp == null) {
-            return new ResponseEntity<>("Уже существует", HttpStatus.BAD_REQUEST);
-        }
-        return ResponseEntity.ok(temp);
+        return ResponseEntity.ok(studentService.add(studentRequest));
     }
 
     @GetMapping("{id}")
     public ResponseEntity<?> readStudent(@PathVariable long id) {
-        Optional<Student> temp = studentService.get(id);
-        return temp.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+        return ResponseEntity.ok(studentService.get(id));
     }
 
     @PutMapping
     public ResponseEntity<?> updateStudent(@RequestBody StudentRequest studentRequest) {
-        Student temp = studentService.update(studentRequest);
-        if (temp == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        return ResponseEntity.ok(temp);
+        return ResponseEntity.ok(studentService.update(studentRequest));
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<?> deleteStudent(@PathVariable long id) {
-        try {
-            studentService.delete(id);
-        } catch (EmptyResultDataAccessException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        studentService.delete(id);
         return ResponseEntity.ok().build();
     }
 

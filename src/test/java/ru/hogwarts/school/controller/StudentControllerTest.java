@@ -9,12 +9,14 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 
 import org.springframework.http.ResponseEntity;
+import ru.hogwarts.school.exceptions.StudentNotExistException;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.record.StudentRequest;
 
 import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class StudentControllerTest {
@@ -55,7 +57,7 @@ class StudentControllerTest {
     void deleteStudent() throws Exception {
         long id = ((Student) Objects.requireNonNull((studentController.createStudent(STUDENT)).getBody())).getId();
         restTemplate.delete("http://localhost:" + port + "/student/{id}", id);
-        assertThat(studentController.readStudent(id).getStatusCodeValue()).isEqualTo(404);
+        assertThrows(StudentNotExistException.class, () -> studentController.readStudent(id));
     }
 
     @Test
@@ -73,7 +75,7 @@ class StudentControllerTest {
 
     @Test
     void getFaculty() {
-        long id = ((Student) Objects.requireNonNull((studentController.createStudent(new StudentRequest(0, "", 12,0)))
+        long id = ((Student) Objects.requireNonNull((studentController.createStudent(new StudentRequest(0, "", 12, 0)))
                 .getBody())).getId();
         assertThat(restTemplate.getForObject("http://localhost:" + port + "/student/faculty/{id}", String.class, id))
                 .isEqualTo("Нет информации :(");

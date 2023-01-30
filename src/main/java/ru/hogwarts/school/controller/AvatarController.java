@@ -6,7 +6,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.hogwarts.school.exceptions.StudentNotExistException;
 import ru.hogwarts.school.model.Avatar;
 import ru.hogwarts.school.service.AvatarService;
 
@@ -42,13 +41,7 @@ public class AvatarController {
 
     @GetMapping(value = "/{id}/preview")
     public ResponseEntity<?> downloadAvatar(@PathVariable Long id) {
-        Avatar avatar;
-        try {
-            avatar = avatarService.findAvatar(id);
-        } catch (StudentNotExistException e) {
-            e.printStackTrace();
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        Avatar avatar = avatarService.findAvatar(id);
         HttpHeaders headers = new HttpHeaders();
         byte[] data = avatar.getData();
         headers.setContentType(MediaType.parseMediaType(avatar.getMediaType()));
@@ -58,14 +51,7 @@ public class AvatarController {
 
     @GetMapping(value = "/{id}/from-file")
     public void downloadAvatar(@PathVariable Long id, HttpServletResponse response) throws IOException {
-        Avatar avatar;
-        try {
-            avatar = avatarService.findAvatar(id);
-        } catch (StudentNotExistException e) {
-            e.printStackTrace();
-            response.setStatus(404);
-            return;
-        }
+        Avatar avatar = avatarService.findAvatar(id);
         Path path = Path.of(avatar.getFilePath());
         try (InputStream is = Files.newInputStream(path);
              OutputStream os = response.getOutputStream()) {

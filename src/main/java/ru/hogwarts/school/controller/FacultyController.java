@@ -1,16 +1,13 @@
 package ru.hogwarts.school.controller;
 
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Faculty;
-import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.record.FacultyRequest;
 import ru.hogwarts.school.service.FacultyService;
 
 import java.util.Collection;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("faculty")
@@ -23,35 +20,22 @@ public class FacultyController {
 
     @PostMapping
     public ResponseEntity<?> createFaculty(@RequestBody FacultyRequest facultyRequest) {
-        Faculty temp = facultyService.add(facultyRequest);
-        if (temp == null) {
-            return new ResponseEntity<>("Уже существует", HttpStatus.BAD_REQUEST);
-        }
-        return ResponseEntity.ok(temp);
+        return ResponseEntity.ok(facultyService.add(facultyRequest));
     }
 
     @GetMapping("{id}")
     public ResponseEntity<?> readFaculty(@PathVariable long id) {
-        Optional<Faculty> temp = facultyService.get(id);
-        return temp.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+        return ResponseEntity.ok().body(facultyService.get(id));
     }
 
     @PutMapping
     public ResponseEntity<?> updateFaculty(@RequestBody FacultyRequest facultyRequest) {
-        Faculty temp = facultyService.update(facultyRequest);
-        if (temp == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        return ResponseEntity.ok(temp);
+        return ResponseEntity.ok(facultyService.update(facultyRequest));
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<?> deleteFaculty(@PathVariable long id) {
-        try {
-            facultyService.delete(id);
-        } catch (EmptyResultDataAccessException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        facultyService.delete(id);
         return ResponseEntity.ok().build();
     }
 
@@ -75,11 +59,7 @@ public class FacultyController {
 
     @GetMapping("/from-faculty/{id}")
     public ResponseEntity<?> getAllStudentsFromFaculty(@PathVariable long id) {
-        Collection<Student> temp = facultyService.getAllStudentsFromFaculty(id);
-        if (temp == null) {
-            return new ResponseEntity<>("Нет факультета :(", HttpStatus.BAD_REQUEST);
-        }
-        return ResponseEntity.ok(temp);
+        return ResponseEntity.ok(facultyService.getAllStudentsFromFaculty(id));
     }
 
 

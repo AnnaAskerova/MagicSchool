@@ -2,13 +2,14 @@ package ru.hogwarts.school.service;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import ru.hogwarts.school.exceptions.CreateNewEntityException;
+import ru.hogwarts.school.exceptions.StudentNotExistException;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.record.StudentRequest;
 import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.Collection;
-import java.util.Optional;
 
 @Service
 public class StudentService {
@@ -23,20 +24,22 @@ public class StudentService {
 
     public Student add(StudentRequest studentRequest) {
         if (studentRepository.existsById(studentRequest.getId())) {
-            return null;
+            throw new CreateNewEntityException("Уже существует");
         }
         return saveRecordAsStudent(studentRequest);
     }
 
-    public Optional<Student> get(long id) {
-        return studentRepository.findById(id);
+    public Student get(long id) {
+        return studentRepository.findById(id).orElseThrow(() -> new StudentNotExistException("Студент не найден"));
     }
 
     public Student update(StudentRequest studentRequest) {
         if (studentRepository.existsById(studentRequest.getId())) {
             return saveRecordAsStudent(studentRequest);
+        } else {
+            throw new StudentNotExistException("Студент не найден");
         }
-        return null;
+
     }
 
     private Student saveRecordAsStudent(StudentRequest studentRequest) {
@@ -46,10 +49,11 @@ public class StudentService {
         student.setName(studentRequest.getName());
         long facultyId = studentRequest.getFacultyId();
         if (facultyId != 0) {
-            student.setFaculty(facultyService.get(facultyId).orElse(null));
+            student.setFaculty(facultyService.get(facultyId));
         }
         return studentRepository.save(student);
     }
+
     public void delete(long id) throws EmptyResultDataAccessException {
         studentRepository.deleteById(id);
     }
@@ -63,7 +67,6 @@ public class StudentService {
     }
 
     public Faculty getFacultyByStudentId(long id) {
-        Optional<Student> student = get(id);
-        return student.map(Student::getFaculty).orElse(null);
+        return get(id).getFaculty();
     }
 }

@@ -33,8 +33,7 @@ public class AvatarService {
     }
 
     public void uploadAvatar(Long studentId, MultipartFile avatarFile) throws IOException {
-        Optional<Student> temp = studentService.get(studentId);
-        Student student = temp.orElseThrow(() -> new StudentNotExistException("Студент не найден по ID, аватар невозможно загрузить"));
+        Student student = studentService.get(studentId);
         Path filePath = Path.of(avatarDirectory, student.getId() + "." + getExtensions(avatarFile.getOriginalFilename()));
         Files.createDirectories(filePath.getParent());
         Files.deleteIfExists(filePath);
@@ -70,7 +69,7 @@ public class AvatarService {
     }
 
     public Avatar findAvatar(Long studentId) throws StudentNotExistException {
-        if (studentService.get(studentId).isEmpty()) {
+        if (studentService.get(studentId) == null) {
             throw new StudentNotExistException("Студент не найден по ID");
         }
         Avatar avatar = avatarRepository.findByStudentId(studentId);
