@@ -16,7 +16,7 @@ public class Advice {
 
     @ExceptionHandler(EmptyResultDataAccessException.class)
     public ResponseEntity<Response> handleException(EmptyResultDataAccessException e) {
-        Response response = new Response(e.getMessage());
+        Response response = new Response("Нет в базе данных");
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
