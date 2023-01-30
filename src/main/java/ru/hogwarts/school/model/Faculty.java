@@ -2,10 +2,7 @@ package ru.hogwarts.school.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
@@ -17,7 +14,7 @@ public class Faculty {
     private Long id;
     private String name;
     private String color;
-    @OneToMany(mappedBy = "faculty")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "faculty")
     @JsonManagedReference
     private Collection<Student> students;
 

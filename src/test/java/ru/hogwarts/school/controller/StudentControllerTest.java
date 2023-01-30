@@ -13,6 +13,7 @@ import ru.hogwarts.school.exceptions.StudentNotExistException;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.record.StudentRequest;
 
+import javax.transaction.Transactional;
 import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;

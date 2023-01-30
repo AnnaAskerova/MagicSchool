@@ -13,8 +13,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import ru.hogwarts.school.exceptions.FacultyNotExistException;
-import ru.hogwarts.school.exceptions.StudentNotExistException;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.service.AvatarService;
@@ -30,20 +28,12 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
-@WebMvcTest
+@WebMvcTest(controllers = FacultyController.class)
 class FacultyControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
     private FacultyRepository facultyRepository;
-    @MockBean
-    private AvatarController avatarController;
-    @MockBean
-    private StudentController studentController;
-    @MockBean
-    private AvatarService avatarService;
-    @MockBean
-    private StudentService studentService;
     @InjectMocks
     private FacultyController facultyController;
     @SpyBean
@@ -172,7 +162,7 @@ class FacultyControllerTest {
     @Test
     void getAllStudentsFromFaculty() throws Exception {
         when(facultyRepository.findById(id)).thenReturn(Optional.of(faculty));
-        mockMvc.perform(MockMvcRequestBuilders.get("/from-faculty/{id}", id)
+        mockMvc.perform(MockMvcRequestBuilders.get("/faculty/from-faculty/" + id)
                         .content(id.toString())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
