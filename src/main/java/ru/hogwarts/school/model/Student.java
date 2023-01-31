@@ -64,11 +64,12 @@ public class Student {
 
     @Override
     public String toString() {
+        int facultyId = faculty == null ? 0 : (int)faculty.getId();
         return "Student{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
+                "id=" + Objects.requireNonNull(id, "") +
+                ", name='" + Objects.requireNonNull(name, "") + '\'' +
                 ", age=" + age +
-                ", faculty=" + faculty +
+                ", faculty=" + facultyId +
                 '}';
     }
 }

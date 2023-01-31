@@ -2,12 +2,14 @@ package ru.hogwarts.school.service;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import ru.hogwarts.school.exceptions.CreateNewEntityException;
+import ru.hogwarts.school.exceptions.FacultyNotExistException;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.record.FacultyRequest;
 import ru.hogwarts.school.repository.FacultyRepository;
 
 import java.util.Collection;
-import java.util.Optional;
 
 @Service
 public class FacultyService {
@@ -18,22 +20,31 @@ public class FacultyService {
         this.facultyRepository = facultyRepository;
     }
 
-    public Faculty add(Faculty faculty) {
-        if (facultyRepository.existsById(faculty.getId())) {
-            return null;
+    public Faculty add(FacultyRequest facultyRequest) {
+        if (facultyRepository.existsById(facultyRequest.getId())) {
+            throw new CreateNewEntityException("Уже существует");
         }
-        return facultyRepository.save(faculty);
+        return facultyRepository.save(saveRecordAsFaculty(facultyRequest));
     }
 
-    public Optional<Faculty> get(long id) {
-        return facultyRepository.findById(id);
+    public Faculty get(long id) {
+        return facultyRepository.findById(id).orElseThrow(() -> new FacultyNotExistException("Факультет не найден"));
     }
 
-    public Faculty update(Faculty faculty) {
-        if (facultyRepository.existsById(faculty.getId())) {
-            return facultyRepository.save(faculty);
+    public Faculty update(FacultyRequest facultyRequest) {
+        if (facultyRepository.existsById(facultyRequest.getId())) {
+            return facultyRepository.save(saveRecordAsFaculty(facultyRequest));
+        } else {
+            throw new FacultyNotExistException("Факультет не найден");
         }
-        return null;
+    }
+
+    private Faculty saveRecordAsFaculty(FacultyRequest facultyRequest) {
+        Faculty faculty = new Faculty();
+        faculty.setId(facultyRequest.getId());
+        faculty.setColor(facultyRequest.getColor());
+        faculty.setName(facultyRequest.getName());
+        return faculty;
     }
 
     public void delete(long id) throws EmptyResultDataAccessException {
@@ -48,15 +59,7 @@ public class FacultyService {
         return facultyRepository.findByNameIgnoreCaseOrColorIgnoreCase(name, color);
     }
 
-    public Faculty getFacultyByStudentId(long id) {
-        return facultyRepository.findFacultyByStudentsId(id);
-    }
-
     public Collection<Student> getAllStudentsFromFaculty(long id) {
-        Optional<Faculty> temp = get(id);
-        if (temp.isEmpty()) {
-            return null;
-        }
-        return temp.get().getStudents();
+        return get(id).getStudents();
     }
 }
