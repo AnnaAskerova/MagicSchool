@@ -1,6 +1,7 @@
 package ru.hogwarts.school.service;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.hogwarts.school.exceptions.StudentNotExistException;
@@ -15,7 +16,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Optional;
+import java.util.List;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
@@ -81,4 +82,7 @@ public class AvatarService {
     }
 
 
+    public List<Avatar> getAllAvatars(int page, int size) {
+        return avatarRepository.findAll(PageRequest.of(page - 1, size)).getContent();
+    }
 }

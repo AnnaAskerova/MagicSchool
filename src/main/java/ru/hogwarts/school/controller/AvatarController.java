@@ -61,4 +61,9 @@ public class AvatarController {
             is.transferTo(os);
         }
     }
+
+    @GetMapping
+    public ResponseEntity<?> getAllAvatars(@RequestParam("page") int page, @RequestParam("size") int size) {
+        return ResponseEntity.ok(avatarService.getAllAvatars(page, size));
+    }
 }
