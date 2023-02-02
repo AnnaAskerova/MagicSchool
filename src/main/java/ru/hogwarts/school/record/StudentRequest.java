@@ -3,10 +3,10 @@ package ru.hogwarts.school.record;
 public class StudentRequest{
     private long id;
     private String name;
-    private int age;
+    private Integer age;
     private long facultyId;
 
-    public StudentRequest(long id, String name, int age, long facultyId) {
+    public StudentRequest(long id, String name, Integer age, long facultyId) {
         this.id = id;
         this.name = name;
         this.age = age;
@@ -24,7 +24,7 @@ public class StudentRequest{
         return name;
     }
 
-    public int getAge() {
+    public Integer getAge() {
         return age;
     }
 
