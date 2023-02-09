@@ -1,5 +1,7 @@
 package ru.hogwarts.school.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.exceptions.CreateNewEntityException;
@@ -15,12 +17,14 @@ import java.util.Collection;
 public class FacultyService {
 
     private final FacultyRepository facultyRepository;
+    Logger logger = LoggerFactory.getLogger(FacultyService.class);
 
     public FacultyService(FacultyRepository facultyRepository) {
         this.facultyRepository = facultyRepository;
     }
 
     public Faculty add(FacultyRequest facultyRequest) {
+        logger.debug("Вызван метод add");
         if (facultyRepository.existsById(facultyRequest.getId())) {
             throw new CreateNewEntityException("Уже существует");
         }
@@ -28,10 +32,12 @@ public class FacultyService {
     }
 
     public Faculty get(long id) {
+        logger.debug("Вызван метод get");
         return facultyRepository.findById(id).orElseThrow(() -> new FacultyNotExistException("Факультет не найден"));
     }
 
     public Faculty update(FacultyRequest facultyRequest) {
+        logger.debug("Вызван метод update");
         if (facultyRepository.existsById(facultyRequest.getId())) {
             return facultyRepository.save(saveRecordAsFaculty(facultyRequest));
         } else {
@@ -40,6 +46,7 @@ public class FacultyService {
     }
 
     private Faculty saveRecordAsFaculty(FacultyRequest facultyRequest) {
+        logger.debug("Вызван метод saveRecordAsFaculty");
         Faculty faculty = new Faculty();
         faculty.setId(facultyRequest.getId());
         faculty.setColor(facultyRequest.getColor());
@@ -48,18 +55,22 @@ public class FacultyService {
     }
 
     public void delete(long id) throws EmptyResultDataAccessException {
+        logger.debug("Вызван метод delete");
         facultyRepository.deleteById(id);
     }
 
     public Collection<Faculty> filterByColor(String color) {
+        logger.debug("Вызван метод filterByColor");
         return facultyRepository.findAll().stream().filter(s -> s.getColor().equals(color)).toList();
     }
 
     public Collection<Faculty> findByNameOrColor(String name, String color) {
+        logger.debug("Вызван метод findByNameOrColor");
         return facultyRepository.findByNameIgnoreCaseOrColorIgnoreCase(name, color);
     }
 
     public Collection<Student> getAllStudentsFromFaculty(long id) {
+        logger.debug("Вызван метод getAllStudentsFromFaculty");
         return get(id).getStudents();
     }
 }

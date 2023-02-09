@@ -1,5 +1,7 @@
 package ru.hogwarts.school.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,7 @@ public class AvatarService {
     private String avatarDirectory;
     private final StudentService studentService;
     private final AvatarRepository avatarRepository;
+    Logger logger = LoggerFactory.getLogger(FacultyService.class);
 
     public AvatarService(StudentService studentService, AvatarRepository avatarRepository) {
         this.studentService = studentService;
@@ -34,6 +37,7 @@ public class AvatarService {
     }
 
     public void uploadAvatar(Long studentId, MultipartFile avatarFile) throws IOException {
+        logger.debug("Вызван метод uploadAvatar");
         Student student = studentService.get(studentId);
         Path filePath = Path.of(avatarDirectory, student.getId() + "." + getExtensions(avatarFile.getOriginalFilename()));
         Files.createDirectories(filePath.getParent());
@@ -55,6 +59,7 @@ public class AvatarService {
     }
 
     private byte[] createPreview(Path filePath) throws IOException {
+        logger.debug("Вызван метод createPreview");
         try (InputStream is = Files.newInputStream(filePath);
              BufferedInputStream bis = new BufferedInputStream(is, 1024);
              ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
@@ -70,6 +75,7 @@ public class AvatarService {
     }
 
     public Avatar findAvatar(Long studentId) throws StudentNotExistException {
+        logger.debug("Вызван метод findAvatar");
         if (studentService.get(studentId) == null) {
             throw new StudentNotExistException("Студент не найден по ID");
         }
@@ -78,11 +84,13 @@ public class AvatarService {
     }
 
     private String getExtensions(String fileName) {
+        logger.debug("Вызван метод getExtensions");
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 
 
     public List<Avatar> getAllAvatars(int page, int size) {
+        logger.debug("Вызван метод getAllAvatars");
         return avatarRepository.findAll(PageRequest.of(page - 1, size)).getContent();
     }
 }
