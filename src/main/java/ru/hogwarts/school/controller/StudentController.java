@@ -82,4 +82,9 @@ public class StudentController {
     public ResponseEntity<?> getFiveLast() {
         return ResponseEntity.ok(studentService.getFiveLast());
     }
+
+    @GetMapping("/starts-with-a")
+    public ResponseEntity<?> getStudentsStartsWithA() {
+        return ResponseEntity.ok(studentService.getStudentsStartsWithA());
+    }
 }
