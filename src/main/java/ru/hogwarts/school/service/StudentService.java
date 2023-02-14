@@ -105,12 +105,13 @@ public class StudentService {
         return studentRepository.getFiveLast();
     }
 
-    public Collection<Student> getStudentsStartsWithA() {
+    public Collection<String> getStudentsStartsWithA() {
         logger.debug("Вызван метод getStudentsStartsWithA");
         return studentRepository.findAll().stream()
                 .parallel()
-                .filter(a -> StringUtils.startsWithIgnoreCase(a.getName(), "A"))
-                .sorted((Comparator.comparing(Student::getName)))
+                .map(a -> a.getName().toUpperCase())
+                .filter(a -> a.startsWith("A"))
+                .sorted()
                 .toList();
     }
 }
