@@ -33,7 +33,7 @@ class StudentControllerTest {
     private TestRestTemplate restTemplate;
 
     private final static StudentRequest STUDENT = new StudentRequest(0, "vasya", 12, 1);
-    private final static FacultyRequest FACULTY = new FacultyRequest(0, "fac", "green");
+    private final static FacultyRequest FACULTY = new FacultyRequest(0, "0", "green");
 
     @Test
     void createStudent() throws Exception {
@@ -85,7 +85,7 @@ class StudentControllerTest {
 
     @Test
     void getFaculty() {
-        long id = ((Student) Objects.requireNonNull((studentController.createStudent(new StudentRequest(0, "", 12, 0)))
+        long id = ((Student) Objects.requireNonNull((studentController.createStudent(new StudentRequest(0, "рр", 12, 0)))
                 .getBody())).getId();
         assertThat(restTemplate.getForObject("http://localhost:" + port + "/student/faculty/{id}", String.class, id))
                 .isEqualTo("Нет информации :(");
