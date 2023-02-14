@@ -29,7 +29,7 @@ public class AvatarService {
     private String avatarDirectory;
     private final StudentService studentService;
     private final AvatarRepository avatarRepository;
-    Logger logger = LoggerFactory.getLogger(FacultyService.class);
+    private static final Logger logger = LoggerFactory.getLogger(FacultyService.class);
 
     public AvatarService(StudentService studentService, AvatarRepository avatarRepository) {
         this.studentService = studentService;

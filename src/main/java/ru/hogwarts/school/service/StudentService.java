@@ -19,7 +19,7 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
     private final FacultyService facultyService;
-    Logger logger = LoggerFactory.getLogger(FacultyService.class);
+    private static final Logger logger = LoggerFactory.getLogger(FacultyService.class);
 
 
     public StudentService(StudentRepository studentRepository, FacultyService facultyService) {
