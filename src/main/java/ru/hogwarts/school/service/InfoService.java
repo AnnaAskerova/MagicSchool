@@ -27,7 +27,7 @@ public class InfoService {
         long start = System.currentTimeMillis();
         int num = 1_000_000;
         int result = IntStream
-                .range(1, num)
+                .range(1, num + 1)
                         .sum();
         System.out.println(System.currentTimeMillis() - start);
         return result;
