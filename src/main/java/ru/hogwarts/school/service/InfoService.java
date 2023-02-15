@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @Service
@@ -23,8 +24,12 @@ public class InfoService {
 
     public int getSum() {
         logger.debug("Вызван метод getSum");
-        return Stream.iterate(1, a -> a + 1)
-                .limit(1_000_000_00)
-                .mapToInt(Integer::intValue).sum();
+        long start = System.currentTimeMillis();
+        int num = 1_000_000;
+        int result = IntStream
+                .range(1, num)
+                        .sum();
+        System.out.println(System.currentTimeMillis() - start);
+        return result;
     }
 }

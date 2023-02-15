@@ -12,6 +12,7 @@ import ru.hogwarts.school.record.FacultyRequest;
 import ru.hogwarts.school.repository.FacultyRepository;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Optional;
 
 @Service
@@ -76,9 +77,12 @@ public class FacultyService {
     }
 
     public String getMostLongName() {
-             Optional<Faculty> faculty = facultyRepository.findAll().stream()
+        logger.debug("Вызван метод getMostLongName");
+        return facultyRepository.findAll().stream()
                 .parallel()
-                .reduce((left, right) -> left.getName().length() > right.getName().length() ? left : right);
-        return faculty.isPresent() ? faculty.get().getName() : "";
+                .map(Faculty::getName)
+                .max(Comparator.comparingInt(String::length))
+                .orElse("");
+
     }
 }
