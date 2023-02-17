@@ -1,5 +1,6 @@
 package ru.hogwarts.school.service;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -12,7 +13,8 @@ import ru.hogwarts.school.record.StudentRequest;
 import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Comparator;
+
 
 @Service
 public class StudentService {
@@ -90,11 +92,26 @@ public class StudentService {
 
     public String getAverageAge() {
         logger.debug("Вызван метод getAverageAge");
-        return String.format("%.2f", studentRepository.getAverageAge());
+        //return String.format("%.2f", studentRepository.getAverageAge());
+        Double result = studentRepository.findAll().stream()
+                .parallel()
+                .mapToDouble(Student::getAge)
+                .average().orElse(0);
+        return String.format("%.1f", result);
     }
 
-    public List<Student> getFiveLast() {
+    public Collection<Student> getFiveLast() {
         logger.debug("Вызван метод getFiveLast");
         return studentRepository.getFiveLast();
+    }
+
+    public Collection<String> getStudentsStartsWithA() {
+        logger.debug("Вызван метод getStudentsStartsWithA");
+        return studentRepository.findAll().stream()
+                .parallel()
+                .map(a -> a.getName().toUpperCase())
+                .filter(a -> a.startsWith("A"))
+                .sorted()
+                .toList();
     }
 }
